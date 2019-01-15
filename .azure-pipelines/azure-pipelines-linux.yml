@@ -10,77 +10,23 @@ jobs:
   strategy:
     maxParallel: 8
     matrix:
-      linux_c_compilergcccxx_compilergxxmpimpichpython3.6:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpimpichpython3.6
+      linux_mpimpichpython3.6:
+        CONFIG: linux_mpimpichpython3.6
         UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilergxxmpimpichpython3.7:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpimpichpython3.7
+      linux_mpimpichpython3.7:
+        CONFIG: linux_mpimpichpython3.7
         UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilergxxmpinompipython3.6:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpinompipython3.6
+      linux_mpinompipython3.6:
+        CONFIG: linux_mpinompipython3.6
         UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilergxxmpinompipython3.7:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpinompipython3.7
+      linux_mpinompipython3.7:
+        CONFIG: linux_mpinompipython3.7
         UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilergxxmpiopenmpipython3.6:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpiopenmpipython3.6
+      linux_mpiopenmpipython3.6:
+        CONFIG: linux_mpiopenmpipython3.6
         UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilergxxmpiopenmpipython3.7:
-        CONFIG: linux_c_compilergcccxx_compilergxxmpiopenmpipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpimpichpython3.6:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpimpichpython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpimpichpython3.7:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpimpichpython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpinompipython3.6:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpinompipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpinompipython3.7:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpinompipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpiopenmpipython3.6:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpiopenmpipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilergcccxx_compilertoolchain_cxxmpiopenmpipython3.7:
-        CONFIG: linux_c_compilergcccxx_compilertoolchain_cxxmpiopenmpipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpimpichpython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpimpichpython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpimpichpython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpimpichpython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpinompipython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpinompipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpinompipython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpinompipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpiopenmpipython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpiopenmpipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilergxxmpiopenmpipython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilergxxmpiopenmpipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpimpichpython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpimpichpython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpimpichpython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpimpichpython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpinompipython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpinompipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpinompipython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpinompipython3.7
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpiopenmpipython3.6:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpiopenmpipython3.6
-        UPLOAD_PACKAGES: False
-      linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpiopenmpipython3.7:
-        CONFIG: linux_c_compilertoolchain_ccxx_compilertoolchain_cxxmpiopenmpipython3.7
+      linux_mpiopenmpipython3.7:
+        CONFIG: linux_mpiopenmpipython3.7
         UPLOAD_PACKAGES: False
   steps:
   - script: |
