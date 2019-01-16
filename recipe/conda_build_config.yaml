@@ -3,5 +3,5 @@ python:
     - 3.7
 mpi:
     - openmpi
-    - mpich
+    - mpich  # [linux]
     - nompi
