@@ -12,8 +12,8 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
-  skip: true   # [win]
+  number: 2
+  skip: true  # [win]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
     - cmake -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
