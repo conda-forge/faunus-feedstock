@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.1.1" %}
-{% set sha256 = "c9d068f336918cdbf31406f6000e195764a8bbf90e5bcde8afe8dc015b0957c0" %}
+{% set version = "2.2.0" %}
+{% set sha256 = "1e4bb54034317809ae6be04eaa30e73816b2399f190cfc044bc91ca53ff8741c" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 2
+  number: 0
   skip: true  # [win]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
