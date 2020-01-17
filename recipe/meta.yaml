@@ -29,7 +29,7 @@ requirements:
     - python
     - pandoc 2.2.1
     - pypandoc 1.4
-    - beautifulsoup4 4.6.3
+    - beautifulsoup4 4.8.*
     - ruamel_yaml 0.15.*
     - jinja2
     - sdl2
@@ -40,6 +40,7 @@ requirements:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
     - ruamel_yaml >=0.15
+    - beautifulsoup4 4.8.*
     - pygments >=2.2
     - jinja2
 
@@ -60,7 +61,7 @@ about:
       Faunus is a framework for molecular simulations using Metropolis
       Monte Carlo techniques. It is written in C++14 and has experimental
       support for python bindings.
-  doc_url: http://mlund.github.io/faunus
+  doc_url: https://faunus.readthedocs.io
   dev_url: https://github.com/mlund/faunus
 
 extra:
