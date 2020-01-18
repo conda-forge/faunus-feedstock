@@ -26,6 +26,8 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake >=3.11.4
+  host:
+    - {{ mpi }}  # [mpi != 'nompi']
     - python
     - pandoc 2.2.1
     - pypandoc 1.4
@@ -33,9 +35,6 @@ requirements:
     - ruamel_yaml 0.15.*
     - jinja2
     - sdl2
-  host:
-    - {{ mpi }}  # [mpi != 'nompi']
-    - python
   run:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
