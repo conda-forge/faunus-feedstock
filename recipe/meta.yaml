@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.3.0" %}
-{% set sha256 = "09bb68560e2889cf564801bcd600e434a1779db4da8872dbe6b2741009b9c759" %}
+{% set version = "2.4.0" %}
+{% set sha256 = "14b5628a6a05857a809d9ef56b97d0c67db9923e26683a69e65384fa7eaaa07a" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: 0
   skip: True  # [win or py<36]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
@@ -41,6 +41,7 @@ requirements:
     - ruamel_yaml >=0.15
     - pygments >=2.2
     - jinja2
+    - jsonschema >=3
 
 test:
   commands:
