@@ -10,6 +10,8 @@ source:
   fn: {{ version }}.tar.gz
   url: https://github.com/mlund/{{ name }}/archive/v{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+      - azurefix.patch
 
 build:
   number: 0
