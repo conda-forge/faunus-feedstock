@@ -1,16 +1,18 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 68973eb7..c91a87dd 100644
+index 68973eb7..bd6f1588 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -318,7 +318,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-         -Wno-sign-compare -Wno-unused-local-typedefs -Wno-unknown-pragmas)
- ## Clang
- elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
--    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fsized-deallocation
-+    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fno-sized-deallocation
-         -Wstrict-aliasing -Wno-sign-compare -Wno-unused-local-typedef -Wno-unknown-pragmas)
- endif()
+@@ -184,8 +184,8 @@ set_property(TARGET cppsid PROPERTY IMPORTED_LOCATION ${binary_dir}/libcppsid.a)
+ # PYBIND11
+ FetchContent_Declare(
+     pybind11
+-    URL https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz
+-    URL_HASH MD5=62254c40f89925bb894be421fe4cdef2)
++    URL https://github.com/pybind/pybind11/archive/v2.5.0.tar.gz
++    URL_HASH MD5=1ad2c611378fb440e8550a7eb6b31b89)
  
+ # NANOBENCH
+ FetchContent_Declare(
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 9195f051..6c141e8e 100644
 --- a/src/CMakeLists.txt
