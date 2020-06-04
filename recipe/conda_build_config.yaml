@@ -3,5 +3,15 @@ mpi:
     - mpich  # [linux]
     - nompi
 
-MACOSX_DEPLOYMENT_TARGET:  # [osx]
-    - '10.12'              # [osx]
+MACOSX_DEPLOYMENT_TARGET: # [osx]
+    - '10.12'             # [osx]
+
+c_compiler:    # [osx]
+    - llvm     # [osx]
+    - clang    # [osx]
+cxx_compiler:  # [osx]
+    - llvm     # [osx]
+    - clangxx  # [osx]
+
+llvm:          # [osx]
+    - 4.0      # [osx]
