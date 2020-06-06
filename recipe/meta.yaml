@@ -20,7 +20,7 @@ build:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
     - cmake -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
     - cmake -DENABLE_MPI=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi != 'nompi']
-    - make pyfaunus faunus manual_html
+    - make faunus pyfaunus manual_html
     - make install
 
 requirements:

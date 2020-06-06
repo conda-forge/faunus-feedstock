@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 68973eb7..bd6f1588 100644
+index 68973eb7..baddb60e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -184,8 +184,8 @@ set_property(TARGET cppsid PROPERTY IMPORTED_LOCATION ${binary_dir}/libcppsid.a)
@@ -13,6 +13,15 @@ index 68973eb7..bd6f1588 100644
  
  # NANOBENCH
  FetchContent_Declare(
+@@ -318,7 +318,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+         -Wno-sign-compare -Wno-unused-local-typedefs -Wno-unknown-pragmas)
+ ## Clang
+ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+-    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fsized-deallocation
++    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fno-sized-deallocation
+         -Wstrict-aliasing -Wno-sign-compare -Wno-unused-local-typedef -Wno-unknown-pragmas)
+ endif()
+ 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 9195f051..6c141e8e 100644
 --- a/src/CMakeLists.txt
