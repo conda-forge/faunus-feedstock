@@ -10,7 +10,7 @@ Feedstock license: BSD 3-Clause
 Summary: A Framework for Molecular Monte Carlo Simulations
 
 Faunus is a framework for molecular simulations using Metropolis
-Monte Carlo techniques. It is written in C++14 and has experimental
+Monte Carlo techniques. It is written in C++17 and has experimental
 support for python bindings.
 
 
