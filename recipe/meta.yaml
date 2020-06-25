@@ -14,7 +14,7 @@ source:
       - azurefix.patch
 
 build:
-  number: 1
+  number: 0
   skip: True  # [win or py<36]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux or linux_ppc64le]
