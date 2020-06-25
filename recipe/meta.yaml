@@ -15,12 +15,12 @@ source:
 
 build:
   number: 1
-  skip: True  # [win or py<36]
+  skip: True  # [win or py<36 or linux or osx]
   script:
-    - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
+    - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux or ppc64le]
     - cmake -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
     - cmake -DENABLE_MPI=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi != 'nompi']
-    - make faunus pyfaunus manual_html
+    - make faunus pyfaunus
     - make install
 
 requirements:
@@ -33,18 +33,18 @@ requirements:
   host:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
-    - pandoc 2.2.1
-    - pypandoc 1.4
-    - beautifulsoup4 4.8.*
+    - pandoc 2.2.1 # [x86_64 or osx]
+    - pypandoc 1.4 # [x86_64 or osx]
+    - beautifulsoup4 4.8.* # [x86_64 or osx]
     - ruamel_yaml 0.15.*
-    - jinja2
-    - sdl2
+    - jinja2 # [x86_64 or osx]
+    - sdl2 # [x86_64 or osx]
   run:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
     - ruamel_yaml >=0.15
-    - pygments >=2.2
-    - jinja2
+    - pygments >=2.2 # [x86_64 or osx]
+    - jinja2 # [x86_64 or osx]
     - jsonschema >=3
 
 test:
