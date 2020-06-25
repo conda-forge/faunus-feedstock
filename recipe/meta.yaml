@@ -15,7 +15,7 @@ source:
 
 build:
   number: 1
-  skip: True  # [win or py<36 or linux or osx]
+  skip: True  # [win or py<36 or x86]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux or ppc64le]
     - cmake -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
