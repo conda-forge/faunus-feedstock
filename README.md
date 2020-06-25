@@ -18,7 +18,21 @@ Current build status
 ====================
 
 
-<table>
+<table><tr>
+    <td>Travis</td>
+    <td>
+      <a href="https://travis-ci.com/conda-forge/faunus-feedstock">
+        <img alt="macOS" src="https://img.shields.io/travis/com/conda-forge/faunus-feedstock/master.svg?label=macOS">
+      </a>
+    </td>
+  </tr><tr>
+    <td>Drone</td>
+    <td>
+      <a href="https://cloud.drone.io/conda-forge/faunus-feedstock">
+        <img alt="linux" src="https://img.shields.io/drone/build/conda-forge/faunus-feedstock/master.svg?label=Linux">
+      </a>
+    </td>
+  </tr>
   <tr>
     <td>Linux</td>
     <td>
@@ -35,12 +49,6 @@ Current build status
     <td>Windows</td>
     <td>
       <img src="https://img.shields.io/badge/Windows-disabled-lightgrey.svg" alt="Windows disabled">
-    </td>
-  </tr>
-  <tr>
-    <td>Linux_ppc64le</td>
-    <td>
-      <img src="https://img.shields.io/badge/ppc64le-disabled-lightgrey.svg" alt="ppc64le disabled">
     </td>
   </tr>
 </table>
