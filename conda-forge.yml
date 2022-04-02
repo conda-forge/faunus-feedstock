@@ -5,4 +5,4 @@ github:
 
 provider:
   linux: azure
-  osx: travis
+  osx: azure

@@ -1,6 +1,6 @@
 mpi:
     # openmpi
-    - mpich  # [linux]
+    # mpich  # [linux]
     - nompi
 
 MACOSX_DEPLOYMENT_TARGET: # [osx]
