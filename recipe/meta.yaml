@@ -13,11 +13,11 @@ source:
 
 build:
   number: 0
-  skip: True  # [win or py<36]
+  skip: True  # [win or py<37]
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
-    - cmake -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
-    - cmake -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DENABLE_MPI=on  # [mpi != 'nompi']
+    - cmake -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
+    - cmake -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DENABLE_MPI=on  # [mpi != 'nompi']
     - make faunus pyfaunus manual_html
     - make install
 
@@ -27,7 +27,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cmake >=3.11.4
+    - cmake >=3.16
     - make 4
   host:
     - {{ mpi }}  # [mpi != 'nompi']
