@@ -17,7 +17,7 @@ build:
   script:
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
     - cmake -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
-    - cmake -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DENABLE_MPI=on # [mpi != 'nompi']
+    - cmake -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DENABLE_MPI=on  # [mpi != 'nompi']
     - make faunus pyfaunus manual_html
     - make install
 
@@ -69,4 +69,3 @@ about:
 extra:
   recipe-maintainers:
     - mlund
-
