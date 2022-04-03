@@ -13,9 +13,9 @@ source:
 
 build:
   number: 0
-  skip: True  # [win or py<39]
+  skip: True  # [win or py<39 or linux]
   script:
-    - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
+    - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
     - cmake -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
     - cmake -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DENABLE_MPI=on  # [mpi != 'nompi']
