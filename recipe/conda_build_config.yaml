@@ -1,6 +1,6 @@
 mpi:
-    # openmpi
-    # mpich  # [linux]
+    - openmpi  # [osx]
+    - mpich    # [linux]
     - nompi
 
 MACOSX_SDK_VERSION:      # [osx and x86_64]
