@@ -10,12 +10,14 @@ source:
   fn: {{ version }}.tar.gz
   url: https://github.com/mlund/{{ name }}/archive/v{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - azurefix.patch # patch python detection
 
 build:
   number: 0
   skip: True  # [win or py<39]
   script:
-    - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"
+    - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
     - cmake -DPYTHON_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }}  # [mpi == 'nompi']
     - cmake -DPYTHON_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DENABLE_MPI=on  # [mpi != 'nompi']
