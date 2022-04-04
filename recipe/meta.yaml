@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.4.0" %}
-{% set sha256 = "14b5628a6a05857a809d9ef56b97d0c67db9923e26683a69e65384fa7eaaa07a" %}
+{% set version = "2.6.0" %}
+{% set sha256 = "d0f2f83a9d734b151387122d2cea7ce30f75e6063aa031b3728bf10a9d379e36" %}
 
 package:
   name: {{ name|lower }}
@@ -11,15 +11,16 @@ source:
   url: https://github.com/mlund/{{ name }}/archive/v{{ version }}.tar.gz
   sha256: {{ sha256 }}
   patches:
-      - azurefix.patch
+    - azurefix.patch # patch python detection
 
 build:
   number: 0
-  skip: True  # [win or py<36]
+  skip: True  # [win or py<38]
   script:
+    - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
-    - cmake -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi == 'nompi']
-    - cmake -DENABLE_MPI=on -DVERSION_STRING=v{{ version }} -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX  # [mpi != 'nompi']
+    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }}  # [mpi == 'nompi']
+    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DENABLE_MPI=on  # [mpi != 'nompi']
     - make faunus pyfaunus manual_html
     - make install
 
@@ -29,14 +30,15 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cmake >=3.11.4
+    - cmake >=3.16
+    - make 4
   host:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
-    - pandoc 2.2.1
-    - pypandoc 1.4
-    - beautifulsoup4 4.8.*
-    - ruamel_yaml 0.15.*
+    - pandoc 2
+    - pypandoc 1
+    - beautifulsoup4 4
+    - ruamel_yaml 0.15
     - jinja2
     - sdl2
   run:
@@ -61,8 +63,8 @@ about:
   license_file: LICENSE
   summary: 'A Framework for Molecular Monte Carlo Simulations'
   description: |
-      Faunus is a framework for molecular simulations using Metropolis
-      Monte Carlo techniques. It is written in C++17 and has experimental
+      Faunus is a tool for molecular simulations using Metropolis-Hastings
+      Monte Carlo techniques. It is written in C++20 and has experimental
       support for python bindings.
   doc_url: https://faunus.readthedocs.io
   dev_url: https://github.com/mlund/faunus

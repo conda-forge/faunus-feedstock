@@ -1,50 +1,473 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 68973eb7..baddb60e 100644
+index 7a122b2c..4e92f7fd 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -184,8 +184,8 @@ set_property(TARGET cppsid PROPERTY IMPORTED_LOCATION ${binary_dir}/libcppsid.a)
- # PYBIND11
- FetchContent_Declare(
-     pybind11
--    URL https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz
--    URL_HASH MD5=62254c40f89925bb894be421fe4cdef2)
-+    URL https://github.com/pybind/pybind11/archive/v2.5.0.tar.gz
-+    URL_HASH MD5=1ad2c611378fb440e8550a7eb6b31b89)
+@@ -22,7 +22,7 @@ include(cmake/CompilerWarnings.cmake)
+ set_project_warnings(project_warnings)
  
- # NANOBENCH
- FetchContent_Declare(
-@@ -318,7 +318,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-         -Wno-sign-compare -Wno-unused-local-typedefs -Wno-unknown-pragmas)
- ## Clang
- elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
--    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fsized-deallocation
-+    add_compile_options(-Wall -Wextra -Wpedantic -Wunreachable-code -fno-sized-deallocation
-         -Wstrict-aliasing -Wno-sign-compare -Wno-unused-local-typedef -Wno-unknown-pragmas)
+ set(THREADS_PREFER_PTHREAD_FLAG ON)
+-find_package(PythonInterp 3 REQUIRED)
++find_package(Python 3 COMPONENTS Interpreter REQUIRED)
+ find_package(Threads REQUIRED)
+ find_package(ZLIB REQUIRED)
+ enable_testing()
+diff --git a/docs/CMakeLists.txt b/docs/CMakeLists.txt
+index e92d2d46..2083b559 100644
+--- a/docs/CMakeLists.txt
++++ b/docs/CMakeLists.txt
+@@ -1,22 +1,18 @@
+ # MANUAL
+ 
+-# Check for python packages required to build manual and parse yaml files
+-if (PYTHONINTERP_FOUND)
+-    # optional packages
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from bs4 import BeautifulSoup" RESULT_VARIABLE HAS_BS ERROR_QUIET)
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import pypandoc" RESULT_VARIABLE HAS_PYPANDOC ERROR_QUIET)
++execute_process(COMMAND ${Python_EXECUTABLE} -c "from bs4 import BeautifulSoup" RESULT_VARIABLE HAS_BS ERROR_QUIET)
++execute_process(COMMAND ${Python_EXECUTABLE} -c "import pypandoc" RESULT_VARIABLE HAS_PYPANDOC ERROR_QUIET)
+ 
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from jsonschema import Draft7Validator" RESULT_VARIABLE HAS_JSONSCHEMA ERROR_QUIET)
+-    if (HAS_JSONSCHEMA EQUAL 1)
+-        message("python: missing `jsonschema` package is highly recommended")
+-    endif()
++execute_process(COMMAND ${Python_EXECUTABLE} -c "from jsonschema import Draft7Validator" RESULT_VARIABLE HAS_JSONSCHEMA ERROR_QUIET)
++if (HAS_JSONSCHEMA EQUAL 1)
++    message("python: missing `jsonschema` package is highly recommended")
++endif()
+ 
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import ruamel_yaml as yaml" RESULT_VARIABLE HAS_YAML1 ERROR_QUIET)
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import ruamel.yaml as yaml" RESULT_VARIABLE HAS_YAML2 ERROR_QUIET)
+-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import yaml" RESULT_VARIABLE HAS_YAML3 ERROR_QUIET)
+-    if ((HAS_YAML1 EQUAL 1) AND (HAS_YAML2 EQUAL 1) AND (HAS_YAML3 EQUAL 1))
+-        message("python: missing `ruamel_yaml` (preferred) or `yaml` packages are highly recommended")
+-    endif()
++execute_process(COMMAND ${Python_EXECUTABLE} -c "import ruamel_yaml as yaml" RESULT_VARIABLE HAS_YAML1 ERROR_QUIET)
++execute_process(COMMAND ${Python_EXECUTABLE} -c "import ruamel.yaml as yaml" RESULT_VARIABLE HAS_YAML2 ERROR_QUIET)
++execute_process(COMMAND ${Python_EXECUTABLE} -c "import yaml" RESULT_VARIABLE HAS_YAML3 ERROR_QUIET)
++if ((HAS_YAML1 EQUAL 1) AND (HAS_YAML2 EQUAL 1) AND (HAS_YAML3 EQUAL 1))
++    message("python: missing `ruamel_yaml` (preferred) or `yaml` packages are highly recommended")
  endif()
  
+ find_program(PANDOC pandoc)
+@@ -77,17 +73,15 @@ if (PANDOC)
+         -N --toc -o ${CMAKE_BINARY_DIR}/manual.html
+         )
+ 
+-    if (PYTHONINTERP_FOUND)
+-        if (HAS_BS EQUAL 0)
+-            if (HAS_PYPANDOC EQUAL 0)
+-                add_custom_target(
+-                    usagetips
+-                    ALL
+-                    COMMENT "extracting tips from manual"
+-                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+-                    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/extracttips.py)
+-                add_dependencies(usagetips manual_html)
+-            endif()
++    if (HAS_BS EQUAL 0)
++        if (HAS_PYPANDOC EQUAL 0)
++            add_custom_target(
++                usagetips
++                ALL
++                COMMENT "extracting tips from manual"
++                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
++                COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/extracttips.py)
++            add_dependencies(usagetips manual_html)
+         endif()
+     endif()
+ endif()
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index ade17c70..8a94834c 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -13,29 +13,29 @@ add_test(
+ if (TARGET pyfaunus)
+     add_test(
+             NAME pythontest
+-            COMMAND sh -c "${PYTHON_EXECUTABLE} pythontest.py -v"
++            COMMAND sh -c "${Python_EXECUTABLE} pythontest.py -v"
+             WORKING_DIRECTORY ${EXAMPLES_DIR})
+     set_tests_properties(pythontest PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:pyfaunus>")
+ endif()
+ 
+ add_test(
+         NAME swapconf
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} swapconf.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} swapconf.yml\
+     | $<TARGET_FILE:faunus> --nobar --state swapconf.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} swapconf.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} swapconf.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/swapconf)
+ 
+ add_test(
+         NAME chargemove
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} chargemove.yml | $<TARGET_FILE:faunus> --nobar\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} chargemove.out.json out.json --tol 0.05"
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} chargemove.yml | $<TARGET_FILE:faunus> --nobar\
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} chargemove.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/chargemove)
+ 
+ add_test(
+         NAME doublelayer
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} doublelayer.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} doublelayer.yml\
+     | $<TARGET_FILE:faunus> --nobar --state doublelayer.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} doublelayer.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} doublelayer.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/doublelayer)
+ 
+ add_test(
+@@ -70,167 +70,167 @@ set_property(TEST virial APPEND PROPERTY ENVIRONMENT YASON_EXECUTABLE=${YASON})
+ 
+ add_test(
+         NAME minimal
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} minimal.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} minimal.yml\
+     | $<TARGET_FILE:faunus> --nobar --state minimal.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} minimal.out.json out.json --tol 0.02"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} minimal.out.json out.json --tol 0.02"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/minimal)
+ 
+ add_test(
+         NAME bend
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} bend.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} bend.yml\
+     | $<TARGET_FILE:faunus> --nobar\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} bend.out.json out.json --tol 0.03"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} bend.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/bend)
+ 
+ add_test(
+         NAME gromos_bend
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} gromos_bend.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} gromos_bend.yml\
+     | $<TARGET_FILE:faunus> --nobar\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} gromos_bend.out.json out.json --tol 0.03"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} gromos_bend.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/gromos_bend)
+ 
+ add_test(
+         NAME dihedral
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} dihedral.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} dihedral.yml\
+     | $<TARGET_FILE:faunus> --nobar\
+-   && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} dihedral.out.json out.json --tol 0.03"
++   && ${Python_EXECUTABLE} ${JSON_COMPARE} dihedral.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/dihedral)
+ 
+ add_test(
+         NAME improper_dihedral
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} improper_dihedral.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} improper_dihedral.yml\
+     | $<TARGET_FILE:faunus> --nobar\
+-   && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} improper_dihedral.out.json out.json --tol 0.03"
++   && ${Python_EXECUTABLE} ${JSON_COMPARE} improper_dihedral.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/improper_dihedral)
+ 
+ add_test(
+         NAME fene_stretch
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} fene_stretch.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} fene_stretch.yml\
+     | $<TARGET_FILE:faunus> --nobar\
+-   && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} fene_stretch.out.json out.json --tol 0.03"
++   && ${Python_EXECUTABLE} ${JSON_COMPARE} fene_stretch.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/fene_stretch)
+ 
+ add_test(
+         NAME chain
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} chain.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} chain.yml\
+     | $<TARGET_FILE:faunus> --nobar --state chain.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} chain.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} chain.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/chain)
+ 
+ add_test(
+         NAME psc_energy
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} cigarsenergy.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} cigarsenergy.yml\
+     | $<TARGET_FILE:faunus> --nobar --state cigarsenergy.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} cigarsenergy.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} cigarsenergy.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/psc_energy)
+ 
+ add_test(
+         NAME polymers
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} polymers.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} polymers.yml\
+     | $<TARGET_FILE:faunus> --nobar --state polymers.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} polymers.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} polymers.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/polymers)
+ 
+ add_test(
+         NAME smartmc
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} smartmc.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} smartmc.yml\
+     | $<TARGET_FILE:faunus> --quiet\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} smartmc.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} smartmc.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/smartmc)
+ 
+ add_test(
+         NAME speciation
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} speciation.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} speciation.yml\
+     | $<TARGET_FILE:faunus> --quiet --state speciation.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} speciation.out.json out.json --tol 0.02"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} speciation.out.json out.json --tol 0.02"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/speciation)
+ 
+ add_test(
+         NAME speciation_group
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} speciation_group.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} speciation_group.yml\
+     | $<TARGET_FILE:faunus> --quiet --state speciation_group.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} speciation_group.out.json out.json --tol 0.03"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} speciation_group.out.json out.json --tol 0.03"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/speciation_group)
+ 
+ add_test(
+         NAME speciation_swapconf
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} speciation_swapconf.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} speciation_swapconf.yml\
+     | $<TARGET_FILE:faunus> --quiet --state speciation_swapconf.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} speciation_swapconf.out.json out.json --tol 0.015"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} speciation_swapconf.out.json out.json --tol 0.015"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/speciation_swapconf)
+ 
+ add_test(
+         NAME titration
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} titration.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} titration.yml\
+     | $<TARGET_FILE:faunus> --quiet --state titration.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} titration.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} titration.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/titration)
+ 
+ add_test(
+         NAME calciumhydroxide
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} calciumhydroxide.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} calciumhydroxide.yml\
+     | $<TARGET_FILE:faunus> --quiet --state calciumhydroxide.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} calciumhydroxide.out.json out.json --tol 0.02"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} calciumhydroxide.out.json out.json --tol 0.02"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/calciumhydroxide)
+ 
+ add_test(
+         NAME calciumhydroxide_molecular
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} calciumhydroxide_molecular.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} calciumhydroxide_molecular.yml\
+     | $<TARGET_FILE:faunus> --quiet --state calciumhydroxide_molecular.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} calciumhydroxide_molecular.out.json out.json --tol 0.02"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} calciumhydroxide_molecular.out.json out.json --tol 0.02"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/calciumhydroxide_molecular)
+ 
+ add_test(
+         NAME gouychapman
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} gouychapman.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} gouychapman.yml\
+     | $<TARGET_FILE:faunus> --quiet --state gouychapman.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} gouychapman.out.json out.json --tol 0.015"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} gouychapman.out.json out.json --tol 0.015"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/gouychapman)
+ 
+ add_test(
+         NAME water-ewald-NOCHECKS
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} ewald.yml | $<TARGET_FILE:faunus>"
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} ewald.yml | $<TARGET_FILE:faunus>"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/water)
+ 
+ add_test(
+         NAME phosphate
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} phosphate.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} phosphate.yml\
+     | $<TARGET_FILE:faunus> --quiet --state phosphate.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} phosphate.out.json out.json --tol 0.02"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} phosphate.out.json out.json --tol 0.02"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/phosphate)
+ 
+ add_test(
+         NAME sodiumphosphate
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} sodiumphosphate.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} sodiumphosphate.yml\
+     | $<TARGET_FILE:faunus> --quiet --state sodiumphosphate.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} sodiumphosphate.out.json out.json --tol 0.05"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} sodiumphosphate.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/sodiumphosphate)
+ 
+ add_test(
+         NAME cluster
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} cluster.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} cluster.yml\
+     | $<TARGET_FILE:faunus> --quiet --state cluster.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} cluster.out.json out.json --tol 0.1"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} cluster.out.json out.json --tol 0.1"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/cluster)
+ 
+ add_test(
+         NAME cluster-ideal
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} cluster-ideal.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} cluster-ideal.yml\
+     | $<TARGET_FILE:faunus> --quiet\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} cluster-ideal.out.json out.json --tol 0.01"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} cluster-ideal.out.json out.json --tol 0.01"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/cluster-ideal)
+ 
+ add_test(
+         NAME bulk
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} bulk.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} bulk.yml\
+     | $<TARGET_FILE:faunus> --quiet --state bulk.state.json\
+-    ; ${PYTHON_EXECUTABLE} ${JSON_COMPARE} bulk.out.json out.json --tol 0.05"
++    ; ${Python_EXECUTABLE} ${JSON_COMPARE} bulk.out.json out.json --tol 0.05"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/bulk)
+ set_property(TEST bulk PROPERTY FIXTURES_SETUP bulk)
+ 
+ add_test(
+         NAME bulk-replay
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} bulk-replay.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} bulk-replay.yml\
+     | $<TARGET_FILE:faunus> --quiet \
+     ; diff -q ../bulk/traj.xtc traj.xtc \
+     && ${CSV_COMPARE} -q --tol 0.05 --small 0.1 ../bulk/rdf.dat rdf.dat"
+@@ -239,29 +239,29 @@ set_property(TEST bulk-replay PROPERTY FIXTURES_REQUIRED bulk)
+ 
+ add_test(
+         NAME seawater
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} seawater.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} seawater.yml\
+     | $<TARGET_FILE:faunus> --quiet"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/seawater)
+ 
+ add_test(
+         NAME stockmayer
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} stockmayer.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} stockmayer.yml\
+     | $<TARGET_FILE:faunus> --quiet --state stockmayer.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} stockmayer.out.json out.json --tol 0.065"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} stockmayer.out.json out.json --tol 0.065"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/stockmayer)
+ 
+ add_test(
+         NAME membrane
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} membrane.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} membrane.yml\
+     | $<TARGET_FILE:faunus> --quiet --state membrane.state.json\
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} membrane.out.json out.json --tol 0.065"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} membrane.out.json out.json --tol 0.065"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/membrane)
+ 
+ add_test(
+         NAME widom
+-        COMMAND sh -c "${PYTHON_EXECUTABLE} ${YASON} widom.yml\
++        COMMAND sh -c "${Python_EXECUTABLE} ${YASON} widom.yml\
+     | $<TARGET_FILE:faunus> --nobar \
+-    && ${PYTHON_EXECUTABLE} ${JSON_COMPARE} widom.out.json out.json --tol 0.01"
++    && ${Python_EXECUTABLE} ${JSON_COMPARE} widom.out.json out.json --tol 0.01"
+         WORKING_DIRECTORY ${EXAMPLES_DIR}/widom)
+ 
+ 
+diff --git a/scripts/Dockerfile b/scripts/Dockerfile
+index 03088cda..8a6b0436 100644
+--- a/scripts/Dockerfile
++++ b/scripts/Dockerfile
+@@ -57,7 +57,7 @@ RUN git clone https://github.com/mlund/faunus.git && \
+     export CXX=g++-11 && \
+     export CC=gcc-11 && \
+     cd faunus && \
+-    cmake -DCMAKE_INSTALL_PREFIX=${CONDA_DIR} -DENABLE_PYTHON=on -DENABLE_OPENMP=on -DENABLE_MPI=on -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYBIND11_FINDPYTHON=on . && \
++    cmake -DENABLE_PYTHON=on -DENABLE_OPENMP=on -DENABLE_MPI=on -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPYBIND11_FINDPYTHON=on . && \
+     make faunus && \
+     make pyfaunus && \
+     make install && \
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 9195f051..6c141e8e 100644
+index 2141dfe9..50f962d4 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -111,7 +111,7 @@ if(ENABLE_FREESASA)
+@@ -115,11 +115,9 @@ if (ENABLE_SID)
+         include_directories(SYSTEM ${SDL2_INCLUDE_DIRS})
+         target_link_libraries(faunus PRIVATE ${SDL2_LIBRARIES} cppsid)
+         target_compile_definitions(faunus PRIVATE ENABLE_SID)
+-        if (PYTHONINTERP_FOUND)
+-            execute_process(
+-                    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/extractsids.py ${CMAKE_SOURCE_DIR}/scripts/music.yml
+-                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR} ERROR_QUIET OUTPUT_QUIET)
+-        endif ()
++        execute_process(
++            COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/extractsids.py ${CMAKE_SOURCE_DIR}/scripts/music.yml
++            WORKING_DIRECTORY ${CMAKE_BINARY_DIR} ERROR_QUIET OUTPUT_QUIET)
+     endif ()
+ endif ()
+ 
+@@ -141,51 +139,21 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+ 
+ option(ENABLE_PYTHON "Try to compile python bindings (experimental!)" off)
+ if (ENABLE_PYTHON)
+-    find_package(PythonLibs 3 REQUIRED)
+-
+-    if (PYTHONINTERP_FOUND)
+-        execute_process(
+-            COMMAND ${PYTHON_EXECUTABLE} scripts/yason.py -h
+-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+-            ERROR_QUIET OUTPUT_QUIET
+-            RESULT_VARIABLE yasontest)
+-        if (${yasontest} EQUAL 1)
+-            message("missing required python modules 'yaml' or 'ruamel_yaml'")
+-        endif()
++    find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
++    execute_process(COMMAND ${Python_EXECUTABLE} scripts/yason.py -h
++        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} ERROR_QUIET OUTPUT_QUIET RESULT_VARIABLE yasontest)
++    if (${yasontest} EQUAL 1)
++        message("missing required python modules 'yaml' or 'ruamel_yaml'")
+     endif()
+ 
+-    if (PYTHONLIBS_FOUND)
+-        pybind11_add_module(pyfaunus pyfaunus.cpp ${objs})
+-        target_link_libraries(pyfaunus PRIVATE
+-            project_options
+-            cereal
+-            Eigen
+-            functionparser
+-            nlohmann_json
+-            pybind11_json
+-            range-v3
+-            spdlog
+-            xdrfile
+-            zstr)
+-        target_compile_definitions(pyfaunus PUBLIC SPDLOG_COMPILED_LIB)
+-        target_compile_definitions(pyfaunus PRIVATE DOCTEST_CONFIG_DISABLE)
+-    endif ()
+-endif ()
+-
+-if (PYTHONINTERP_FOUND)
+-    # find _relative_ path of python library and thus respect CMAKE_INSTALL_PREFIX.
+-    # could be replaced by FindPython() but req. cmake 3.12
+-    # https://stackoverflow.com/questions/1242904/finding-python-site-packages-directory-with-cmake
+-    execute_process(
+-        COMMAND "${PYTHON_EXECUTABLE}" -c "if True:
+-        from distutils import sysconfig as sc
+-        print(sc.get_python_lib(prefix='', plat_specific=True))"
+-        OUTPUT_VARIABLE PYTHON_SITE
+-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+-endif()
++    pybind11_add_module(pyfaunus pyfaunus.cpp ${objs})
++    target_link_libraries(pyfaunus PRIVATE
++        project_options cereal Eigen functionparser nlohmann_json pybind11_json range-v3 spdlog xdrfile zstr)
++    target_compile_definitions(pyfaunus PUBLIC SPDLOG_COMPILED_LIB)
++    target_compile_definitions(pyfaunus PRIVATE DOCTEST_CONFIG_DISABLE)
+ 
+-if (TARGET pyfaunus)
+-    install(TARGETS pyfaunus DESTINATION ${PYTHON_SITE} OPTIONAL)
++    message("Python site-packages: ${Python_SITELIB}")
++    install(TARGETS pyfaunus DESTINATION ${Python_SITELIB} OPTIONAL)
  endif()
  
- # target: unittests
--add_executable(unittests unittests.cpp ${tsts})
-+add_executable(unittests EXCLUDE_FROM_ALL unittests.cpp ${tsts})
- target_link_libraries(unittests libfaunus)
- target_compile_definitions(unittests PRIVATE SPDLOG_COMPILED_LIB)
- add_test(
-@@ -463,9 +463,9 @@ install(FILES
-     ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide.yml
-     ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide.out.json
-     ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide.state.json
--    ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide_molecular.yml
--    ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide_molecular.out.json
--    ${EXAMPLES_DIR}/calciumhydroxide/calciumhydroxide_molecular.state.json
-+    ${EXAMPLES_DIR}/calciumhydroxide_molecular/calciumhydroxide_molecular.yml
-+    ${EXAMPLES_DIR}/calciumhydroxide_molecular/calciumhydroxide_molecular.out.json
-+    ${EXAMPLES_DIR}/calciumhydroxide_molecular/calciumhydroxide_molecular.state.json
-     ${EXAMPLES_DIR}/water/ewald.yml
-     DESTINATION share/faunus/examples)
- 
+ # ========== assorted installation targets ==========
+@@ -200,5 +168,5 @@ install(FILES
+     ${CMAKE_SOURCE_DIR}/scripts/faunus-manual
+     DESTINATION bin
+     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+-install(DIRECTORY ${CMAKE_SOURCE_DIR}/scripts/faunustools DESTINATION ${PYTHON_SITE} OPTIONAL
++install(DIRECTORY ${CMAKE_SOURCE_DIR}/scripts/faunustools DESTINATION ${Python_SITELIB} OPTIONAL
+     PATTERN ${CMAKE_SOURCE_DIR}/scripts/faunustool/__pycache__ EXCLUDE)
