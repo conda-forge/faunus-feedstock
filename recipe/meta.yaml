@@ -14,7 +14,7 @@ source:
     - azurefix.patch # patch python detection
 
 build:
-  number: 0
+  number: 1
   skip: True  # [win or py<38]
   script:
     - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
