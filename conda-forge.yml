@@ -7,4 +7,5 @@ github:
 provider:
   linux: azure
   osx: azure
+  linux_aarch64: default
 test_on_native_only: true
