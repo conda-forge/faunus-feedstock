@@ -37,8 +37,8 @@ requirements:
   host:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
-    - pandoc 2
-    - pypandoc 1
+    - pandoc 2    # [not arm64]
+    - pypandoc 1  # [not arm64]
     - beautifulsoup4 4
     - ruamel_yaml 0.15
     - jinja2
