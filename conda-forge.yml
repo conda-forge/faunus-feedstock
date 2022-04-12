@@ -6,6 +6,6 @@ github:
   tooling_branch_name: main
 provider:
   linux: azure
-  osx: azure
   linux_aarch64: azure
+  osx: azure
 test_on_native_only: true
