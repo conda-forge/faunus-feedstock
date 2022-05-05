@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.6.0" %}
-{% set sha256 = "d0f2f83a9d734b151387122d2cea7ce30f75e6063aa031b3728bf10a9d379e36" %}
+{% set version = "2.6.1" %}
+{% set sha256 = "1356e7b7d1b43ead772f85ccef23ae316cb93b6602ff309820c93d6ec8160b4f" %}
 
 package:
   name: {{ name|lower }}
@@ -14,8 +14,8 @@ source:
     - azurefix.patch # patch python detection
 
 build:
-  number: 2
-  skip: True  # [win or py<38]
+  number: 0
+  skip: true  # [win or py<38]
   script:
     - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
@@ -64,11 +64,11 @@ about:
   license: MIT
   license_family: MIT
   license_file: LICENSE
-  summary: 'A Framework for Molecular Monte Carlo Simulations'
+  summary: A Framework for Molecular Monte Carlo Simulations
   description: |
-      Faunus is a tool for molecular simulations using Metropolis-Hastings
-      Monte Carlo techniques. It is written in C++20 and has experimental
-      support for python bindings.
+    Faunus is a tool for molecular simulations using Metropolis-Hastings
+    Monte Carlo techniques. It is written in C++20 and has experimental
+    support for python bindings.
   doc_url: https://faunus.readthedocs.io
   dev_url: https://github.com/mlund/faunus
 
