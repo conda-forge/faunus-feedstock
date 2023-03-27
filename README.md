@@ -1,11 +1,11 @@
-About faunus
-============
+About faunus-feedstock
+======================
+
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/faunus-feedstock/blob/main/LICENSE.txt)
 
 Home: https://github.com/mlund/faunus
 
 Package license: MIT
-
-Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/faunus-feedstock/blob/main/LICENSE.txt)
 
 Summary: A Framework for Molecular Monte Carlo Simulations
 
