@@ -12,7 +12,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 2
+  number: 3
   skip: true  # [win or py<38]
   script:
     - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
@@ -31,8 +31,10 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - cmake >=3.16
+    - cmake >=3.24
     - make 4
+    - llvm-openmp  # [osx]
+    - libgomp      # [linux]
   host:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
