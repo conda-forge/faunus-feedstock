@@ -44,6 +44,7 @@ requirements:
     - ruamel_yaml 0.15
     - jinja2
     - sdl2
+    - zlib
   run:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
