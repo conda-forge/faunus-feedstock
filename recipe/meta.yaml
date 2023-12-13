@@ -35,6 +35,7 @@ requirements:
     - make 4
     - llvm-openmp  # [osx]
     - libgomp      # [linux]
+    - zlib         # [linux]
   host:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
