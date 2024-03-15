@@ -10,4 +10,4 @@ provider:
   linux: azure
   linux_aarch64: azure
   osx: azure
-test_on_native_only: true
+test: native_and_emulated
