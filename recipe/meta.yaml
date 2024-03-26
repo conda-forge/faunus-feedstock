@@ -42,13 +42,13 @@ requirements:
     - pandoc 2    # [not arm64]
     - pypandoc 1  # [not arm64]
     - beautifulsoup4 4
-    - ruamel_yaml 0.15
+    - ruamel.yaml <0.19
     - jinja2
     - sdl2
   run:
     - {{ mpi }}  # [mpi != 'nompi']
     - python
-    - ruamel_yaml >=0.15
+    - ruamel.yaml <0.19
     - pygments >=2.2
     - jinja2
     - jsonschema >=3
