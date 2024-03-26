@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.11.0" %}
-{% set sha256 = "eb95613b5edd8e5b38e5195b1b29609da16d981abc1edcee13fb31d7c7828fa8" %}
+{% set version = "2.12.0" %}
+{% set sha256 = "00e2683500f5028d729cb02fc587bba6d5ab7a396de693b6570284e108a494a9" %}
 
 package:
   name: {{ name|lower }}
@@ -12,7 +12,7 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: 0
   skip: true  # [win or py<38]
   script:
     - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
