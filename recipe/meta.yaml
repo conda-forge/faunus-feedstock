@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.14.0" %}
-{% set sha256 = "cd2ad3bdd16be3a6da10e21f2d471dd2c5580c6d8d101d4c2909e33458901fce" %}
+{% set version = "2.15.0" %}
+{% set sha256 = "e6f6642ff7b7af2036f232382f8c11cbfe255d55b173ea894b8642257a88e0e4" %}
 
 package:
   name: {{ name|lower }}
