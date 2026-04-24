@@ -1,6 +1,6 @@
 {% set name = "faunus" %}
-{% set version = "2.16.3" %}
-{% set sha256 = "d1e3f24c2264f52538059e8ca08763d55ebd3ae951321282e225ad88686c8021" %}
+{% set version = "2.17.0" %}
+{% set sha256 = "14da89f98b0018145011ebd4d552fdcd8abd45189a2d8377343572d57b5bd489" %}
 
 package:
   name: {{ name|lower }}
@@ -16,9 +16,10 @@ build:
   skip: true  # [win or py<38]
   script:
     - export CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -DCATCH_CONFIG_NO_CPP17_UNCAUGHT_EXCEPTIONS -fno-aligned-allocation"  # [osx]
+    - export CMAKE_POLICY_VERSION_MINIMUM=3.5
     - unset _CONDA_PYTHON_SYSCONFIGDATA_NAME  # [linux]
-    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }}  # [mpi == 'nompi']
-    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DENABLE_MPI=on  # [mpi != 'nompi']
+    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }}  # [mpi == 'nompi']
+    - cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPython_EXECUTABLE="$PYTHON" -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DPYBIND11_FINDPYTHON=on -DENABLE_PYTHON=on -DVERSION_STRING=v{{ version }} -DENABLE_MPI=on  # [mpi != 'nompi']
     - make faunus pyfaunus
     - make
     - make install
